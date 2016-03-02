@@ -47,162 +47,49 @@ struct triangle {
     std::string vs3;
 };
 
-void bollocks( const class Geometry *root_geom, std::stringstream &output ) {
-	
+// ===================================
+// return our geometry object
+// ===================================
+
+void export_mesh( const class Geometry *root_geom, std::stringstream &output ) {
 	if (const CGAL_Nef_polyhedron *N = dynamic_cast<const CGAL_Nef_polyhedron *>(root_geom)) {
 		buffer_stl(N, output);
 	}
 	else if (const PolySet *ps = dynamic_cast<const PolySet *>(root_geom)) {
 		buffer_stl( *ps , output ); 
 	}
-	
-
 }
 
-void exportFile(const class Geometry *root_geom, std::ostream &output, FileFormat format)
-{
-	/*if (const CGAL_Nef_polyhedron *N = dynamic_cast<const CGAL_Nef_polyhedron *>(root_geom)) {
-
-		switch (format) {
-		case OPENSCAD_STL:
-			export_stl(N, output);
-			break;
-		case OPENSCAD_OFF:
-			export_off(N, output);
-			break;
-		case OPENSCAD_AMF:
-			export_amf(N, output);
-			break;
-		case OPENSCAD_DXF:
-			assert(false && "Export Nef polyhedron as DXF not supported");
-			break;
-		default:
-			assert(false && "Unknown file format");
-		}
-	}
-	else {
-		if (const PolySet *ps = dynamic_cast<const PolySet *>(root_geom)) {
-			switch (format) {
-			case OPENSCAD_STL:
-				export_stl(*ps, output);
-				break;
-			case OPENSCAD_OFF:
-				export_off(*ps, output);
-				break;
-			case OPENSCAD_AMF:
-				export_amf(*ps, output);
-				break;
-			default:
-				assert(false && "Unsupported file format");
-			}
-		}
-		else if (const Polygon2d *poly = dynamic_cast<const Polygon2d *>(root_geom)) {
-			switch (format) {
-			case OPENSCAD_SVG:
-				export_svg(*poly, output);
-				break;
-			case OPENSCAD_DXF:
-				export_dxf(*poly, output);
-				break;
-			default:
-				assert(false && "Unsupported file format");
-			}
-		} else {
-			assert(false && "Not implemented");
-		}
-	}*/
-}
-
-void exportFileByName(const class Geometry *root_geom, FileFormat format,
-	const char *name2open, const char *name2display)
-{
-	/*std::ofstream fstream(name2open);
-	if (!fstream.is_open()) {
-		PRINTB("Can't open file \"%s\" for export", name2display);
-	} else {
-		bool onerror = false;
-		fstream.exceptions(std::ios::badbit|std::ios::failbit);
-		try {
-			exportFile(root_geom, fstream, format);
-		} catch (std::ios::failure x) {
-			onerror = true;
-		}
-		try { // make sure file closed - resources released
-			fstream.close();
-		} catch (std::ios::failure x) {
-			onerror = true;
-		}
-		if (onerror) {
-			PRINTB("ERROR: \"%s\" write error. (Disk full?)", name2display);
-		}
-	}*/
-}
-
-// Buffer export =================================
-
+// ==================================================
+// Buffer vertices , faces 
 
 void buffer_stl(const PolySet &ps, std::stringstream &output)
 {
+	std::string comma(""); 
 	PolySet triangulated(3);
 	PolysetUtils::tessellate_faces(ps, triangulated);
-
 	setlocale(LC_NUMERIC, "C"); // Ensure radix is . (not ,) in output
-	output << "solid OpenSCAD_Model\n";
 	BOOST_FOREACH(const Polygon &p, triangulated.polygons) {
-		assert(p.size() == 3); // STL only allows triangles
-		std::stringstream stream;
-		stream << p[0][0] << " " << p[0][1] << " " << p[0][2];
-		std::string vs1 = stream.str();
-		stream.str("");
-		stream << p[1][0] << " " << p[1][1] << " " << p[1][2];
-		std::string vs2 = stream.str();
-		stream.str("");
-		stream << p[2][0] << " " << p[2][1] << " " << p[2][2];
-		std::string vs3 = stream.str();
-		if (vs1 != vs2 && vs1 != vs3 && vs2 != vs3) {
-			// The above condition ensures that there are 3 distinct vertices, but
-			// they may be collinear. If they are, the unit normal is meaningless
-			// so the default value of "1 0 0" can be used. If the vertices are not
-			// collinear then the unit normal must be calculated from the
-			// components.
-			output << "  facet normal ";
-
-			Vector3d normal = (p[1] - p[0]).cross(p[2] - p[0]);
-			normal.normalize();
-			if (is_finite(normal) && !is_nan(normal)) {
-				output << normal[0] << " " << normal[1] << " " << normal[2] << "\n";
-			}
-			else {
-				output << "0 0 0\n";
-			}
-			output << "    outer loop\n";
-		
-			BOOST_FOREACH(const Vector3d &v, p) {
-				output << "      vertex " << v[0] << " " << v[1] << " " << v[2] << "\n";
-			}
-			output << "    endloop\n";
-			output << "  endfacet\n";
+		assert(p.size() == 3); // only allows triangles
+		BOOST_FOREACH(const Vector3d &v, p) {
+			output << comma << v[0] << "," << v[1] << "," << v[2];
+			comma = ",";
 		}
 	}
-	output << "endsolid OpenSCAD_Model\n";
+	output << "\n";
 	setlocale(LC_NUMERIC, "");      // Set default locale
 }
 
-/*!
-	Saves the given CGAL Polyhedon2 as STL to the given file.
-	The file must be open.
- */
-static void buffer_stl(const CGAL_Polyhedron &P, std::stringstream &output)
-{
+// ===============================================================
+// Buffer vertices , faces 
+
+static void buffer_stl(const CGAL_Polyhedron &P, std::stringstream &output) {
+	std::string comma("");
 	typedef CGAL_Polyhedron::Vertex                                 Vertex;
 	typedef CGAL_Polyhedron::Vertex_const_iterator                  VCI;
 	typedef CGAL_Polyhedron::Facet_const_iterator                   FCI;
 	typedef CGAL_Polyhedron::Halfedge_around_facet_const_circulator HFCC;
-
 	setlocale(LC_NUMERIC, "C"); // Ensure radix is . (not ,) in output
-
-	output << "solid OpenSCAD_Model\n";
-
 	for (FCI fi = P.facets_begin(); fi != P.facets_end(); ++fi) {
 		HFCC hc = fi->facet_begin();
 		HFCC hc_end = hc;
@@ -222,42 +109,14 @@ static void buffer_stl(const CGAL_Polyhedron &P, std::stringstream &output)
 			double y3 = CGAL::to_double(v3.point().y());
 			double z3 = CGAL::to_double(v3.point().z());
 			std::stringstream stream;
-			stream << x1 << " " << y1 << " " << z1;
-			std::string vs1 = stream.str();
-			stream.str("");
-			stream << x2 << " " << y2 << " " << z2;
-			std::string vs2 = stream.str();
-			stream.str("");
-			stream << x3 << " " << y3 << " " << z3;
-			std::string vs3 = stream.str();
-			if (vs1 != vs2 && vs1 != vs3 && vs2 != vs3) {
-				// The above condition ensures that there are 3 distinct vertices, but
-				// they may be collinear. If they are, the unit normal is meaningless
-				// so the default value of "1 0 0" can be used. If the vertices are not
-				// collinear then the unit normal must be calculated from the
-				// components.
-				if (!CGAL::collinear(v1.point(),v2.point(),v3.point())) {
-					CGAL_Polyhedron::Traits::Vector_3 normal = CGAL::normal(v1.point(),v2.point(),v3.point());
-					output << "  facet normal "
-								 << CGAL::sign(normal.x()) * sqrt(CGAL::to_double(normal.x()*normal.x()/normal.squared_length()))
-								 << " "
-								 << CGAL::sign(normal.y()) * sqrt(CGAL::to_double(normal.y()*normal.y()/normal.squared_length()))
-								 << " "
-								 << CGAL::sign(normal.z()) * sqrt(CGAL::to_double(normal.z()*normal.z()/normal.squared_length()))
-								 << "\n";
-				}
-				else output << "  facet normal 1 0 0\n";
-				output << "    outer loop\n";
-				output << "      vertex " << vs1 << "\n";
-				output << "      vertex " << vs2 << "\n";
-				output << "      vertex " << vs3 << "\n";
-				output << "    endloop\n";
-				output << "  endfacet\n";
-			}
+			stream << x1 << "," << y1 << "," << z1; std::string vs1 = stream.str(); stream.str("");
+			stream << x2 << "," << y2 << "," << z2; std::string vs2 = stream.str(); stream.str("");
+			stream << x3 << "," << y3 << "," << z3; std::string vs3 = stream.str();
+			output << comma << vs1 << "," << vs2 << "," << vs3;
+			comma = ",";
 		} while (hc != hc_end);
+		output << "\n";
 	}
-
-	output << "endsolid OpenSCAD_Model\n";
 	setlocale(LC_NUMERIC, "");      // Set default locale
 }
 

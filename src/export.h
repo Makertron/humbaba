@@ -22,7 +22,7 @@ void export_png(shared_ptr<const class Geometry> root_geom, Camera &c, std::ostr
 void export_stl(const class CGAL_Nef_polyhedron *root_N, std::ostream &output);
 void export_stl(const class PolySet &ps, std::ostream &output);
 
-void bollocks( const class Geometry *root_geom, std::stringstream &output );
+void export_mesh( const class Geometry *root_geom, std::stringstream &output );
 void buffer_stl(const class CGAL_Nef_polyhedron *root_N, std::stringstream &output );
 void buffer_stl( const class PolySet &ps , std::stringstream &output );
 

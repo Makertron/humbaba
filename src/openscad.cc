@@ -192,7 +192,7 @@ std::string process_request(std::string text)
 			if (!root_geom) root_geom.reset(new CGAL_Nef_polyhedron());
 			
 			std::stringstream output;
-			bollocks( root_geom.get() , output ); 		
+			export_mesh( root_geom.get() , output ); 		
 			
 			delete root_node;
 			return output.str();
