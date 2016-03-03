@@ -288,15 +288,15 @@ private:
 int main(int argc, char* argv[])
 {
   	
-	
-	std::cout << "Starting Openscad Server on port: " << argv[1] << std::endl; 
-	std::cout << "Working directory is: " << argv[0] << std::endl; 
-	
 	StackCheck::inst()->init();
 	PlatformUtils::ensureStdIO();
 	CGAL::set_error_behaviour(CGAL::ABORT);
 	Builtins::instance()->initialize();
-	CURRENTDIR = std::string(argv[0]); 
+	CURRENTDIR = std::string("/home/ubuntu/openscad/"); 
+
+	std::cout << "Starting Openscad Server on port: " << argv[1] << std::endl; 
+	std::cout << "Working directory is: " << argv[0] << std::endl; 
+
 	NodeCache nodecache;
 	NodeDumper dumper(nodecache);
 
