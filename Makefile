@@ -7,15 +7,14 @@
 CC            = gcc
 CXX           = g++
 DEFINES       = -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0 -DDEBUG -DENABLE_CGAL -DENABLE_OPENCSG
-CFLAGS        = -m64 -pipe -O2 -D_REENTRANT -Wall -W $(DEFINES)
-CXXFLAGS      = -m64 -pipe -fno-strict-aliasing -frounding-math -DEIGEN_DONT_ALIGN -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/freetype2 -O2 -D_REENTRANT -Wall -W -Wno-unused-local-typedefs $(DEFINES)
+CFLAGS        = -g -m64 -pipe -O2 -D_REENTRANT -Wall -W $(DEFINES)
+CXXFLAGS      = -g -m64 -pipe -fno-strict-aliasing -frounding-math -DEIGEN_DONT_ALIGN -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/freetype2 -O2 -D_REENTRANT -Wall -W -Wno-unused-local-typedefs $(DEFINES)
 INCPATH       = -I. -I/usr/include/eigen3 -Isrc -Isrc/libtess2/Include -Iobjects
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
 LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lCGAL -lmpfr -lgmp -lopencsg -lGLEW -lboost_thread -lboost_program_options -lboost_filesystem -lboost_system -lboost_regex -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -L/usr/lib/x86_64-linux-gnu -lGL -lGLU -lX11 -lpthread 
 AR            = ar cqs
 RANLIB        = 
-QMAKE         = /usr/bin/qmake-qt4
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 COPY          = cp -f
@@ -32,6 +31,7 @@ DEL_DIR       = rmdir
 MOVE          = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
+
 
 ####### Output directory
 
@@ -278,48 +278,6 @@ all: Makefile $(TARGET)
 
 $(TARGET): $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
-
-Makefile: openscad.pro  /usr/share/qt4/mkspecs/linux-g++-64/qmake.conf /usr/share/qt4/mkspecs/common/unix.conf \
-		version.pri \
-		win.pri \
-		flex.pri \
-		bison.pri \
-		cgal.pri \
-		opencsg.pri \
-		glew.pri \
-		eigen.pri \
-		boost.pri \
-		glib-2.0.pri \
-		gettext.pri \
-		sparkle.pri \
-		harfbuzz.pri \
-		freetype.pri \
-		fontconfig.pri \
-		common.pri 
-	$(QMAKE) -o Makefile openscad.pro
-version.pri:
-win.pri:
-flex.pri:
-bison.pri:
-cgal.pri:
-opencsg.pri:
-glew.pri:
-eigen.pri:
-boost.pri:
-glib-2.0.pri:
-gettext.pri:
-sparkle.pri:
-harfbuzz.pri:
-freetype.pri:
-fontconfig.pri:
-
-qmake:  FORCE
-	@$(QMAKE) -o Makefile openscad.pro
-
-dist: 
-	@$(CHK_DIR_EXISTS) objects/openscad2015.03-2 || $(MKDIR) objects/openscad2015.03-2 
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) objects/openscad2015.03-2/ && $(COPY_FILE) --parents objects/openscad2015.03-2/ && $(COPY_FILE) src/typedefs.h src/version_check.h src/parsersettings.h src/renderer.h src/settings.h src/rendersettings.h src/colormap.h src/ThrownTogetherRenderer.h src/CGAL_OGL_Polyhedron.h src/OGL_helper.h src/GLView.h src/FontListDialog.h src/builtin.h src/calc.h src/context.h src/modcontext.h src/evalcontext.h src/csgterm.h src/csgtermnormalizer.h src/dxfdata.h src/dxfdim.h src/export.h src/expression.h src/stackcheck.h src/function.h src/exceptions.h src/grid.h src/localscope.h src/module.h src/feature.h src/node.h src/csgnode.h src/offsetnode.h src/linearextrudenode.h src/rotateextrudenode.h src/projectionnode.h src/cgaladvnode.h src/importnode.h src/transformnode.h src/colornode.h src/rendernode.h src/textnode.h src/openscad.h src/handle_dep.h src/Geometry.h src/Polygon2d.h src/clipper-utils.h src/GeometryUtils.h src/polyset-utils.h src/polyset.h src/printutils.h src/fileutils.h src/value.h src/progress.h src/visitor.h src/state.h src/traverser.h src/nodecache.h src/nodedumper.h src/ModuleCache.h src/GeometryCache.h src/GeometryEvaluator.h src/CSGTermEvaluator.h src/Tree.h src/DrawingCallback.h src/FreetypeRenderer.h src/FontCache.h src/mathc99.h src/memory.h src/linalg.h src/Camera.h src/system-gl.h src/stl-utils.h src/boost-utils.h src/svg.h src/lodepng.h src/OffscreenView.h src/OffscreenContext.h src/OffscreenContextAll.hpp src/fbo.h src/imageutils.h src/system-gl.h src/CsgInfo.h src/polyclipping/clipper.hpp src/libtess2/Include/tesselator.h src/libtess2/Source/bucketalloc.h src/libtess2/Source/dict.h src/libtess2/Source/geom.h src/libtess2/Source/mesh.h src/libtess2/Source/priorityq.h src/libtess2/Source/sweep.h src/libtess2/Source/tess.h src/OpenCSGRenderer.h src/cgal.h src/cgalfwd.h src/cgalutils.h src/Reindexer.h src/CGALCache.h src/CGALRenderer.h src/CGAL_Nef_polyhedron.h src/CGAL_Nef3_workaround.h src/convex_hull_3_bugfix.h src/Polygon2d-CGAL.h objects/openscad2015.03-2/ && $(COPY_FILE) --parents openscad.qrc objects/openscad2015.03-2/ && $(COPY_FILE) --parents src/version_check.cc src/mathc99.cc src/linalg.cc src/Camera.cc src/handle_dep.cc src/value.cc src/expr.cc src/stackcheck.cc src/func.cc src/localscope.cc src/module.cc src/feature.cc src/node.cc src/context.cc src/modcontext.cc src/evalcontext.cc src/csgterm.cc src/csgtermnormalizer.cc src/Geometry.cc src/Polygon2d.cc src/clipper-utils.cc src/polyset-utils.cc src/GeometryUtils.cc src/polyset.cc src/csgops.cc src/transform.cc src/color.cc src/primitives.cc src/projection.cc src/cgaladv.cc src/surface.cc src/control.cc src/render.cc src/text.cc src/dxfdata.cc src/dxfdim.cc src/offset.cc src/linearextrude.cc src/rotateextrude.cc src/printutils.cc src/fileutils.cc src/progress.cc src/parsersettings.cc src/stl-utils.cc src/boost-utils.cc src/PlatformUtils.cc src/nodedumper.cc src/traverser.cc src/GeometryEvaluator.cc src/ModuleCache.cc src/GeometryCache.cc src/Tree.cc src/DrawingCallback.cc src/FreetypeRenderer.cc src/FontCache.cc src/settings.cc src/rendersettings.cc src/GLView.cc src/grid.cc src/builtin.cc src/calc.cc src/export.cc src/export_png.cc src/import.cc src/renderer.cc src/colormap.cc src/ThrownTogetherRenderer.cc src/CSGTermEvaluator.cc src/svg.cc src/OffscreenView.cc src/fbo.cc src/system-gl.cc src/imageutils.cc src/lodepng.cpp src/openscad.cc src/polyclipping/clipper.cpp src/libtess2/Source/bucketalloc.c src/libtess2/Source/dict.c src/libtess2/Source/geom.c src/libtess2/Source/mesh.c src/libtess2/Source/priorityq.c src/libtess2/Source/sweep.c src/libtess2/Source/tess.c src/imageutils-lodepng.cc src/OffscreenContextGLX.cc src/OpenCSGRenderer.cc src/cgalutils.cc src/cgalutils-tess.cc src/cgalutils-polyhedron.cc src/CGALCache.cc src/CGALRenderer.cc src/CGAL_Nef_polyhedron.cc src/Polygon2d-CGAL.cc src/PlatformUtils-posix.cc objects/openscad2015.03-2/ && $(COPY_FILE) --parents src/parser.y objects/openscad2015.03-2/ && $(COPY_FILE) --parents src/parser.y objects/openscad2015.03-2/ && $(COPY_FILE) --parents src/lexer.l objects/openscad2015.03-2/ && (cd `dirname objects/openscad2015.03-2` && $(TAR) openscad2015.03-2.tar openscad2015.03-2 && $(COMPRESS) openscad2015.03-2.tar) && $(MOVE) `dirname objects/openscad2015.03-2`/openscad2015.03-2.tar.gz . && $(DEL_FILE) -r objects/openscad2015.03-2
-
 
 clean:compiler_clean 
 	-$(DEL_FILE) $(OBJECTS)

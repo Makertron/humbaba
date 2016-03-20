@@ -14,6 +14,7 @@ void *outputhandler_data = NULL;
 std::string OpenSCAD::debug("");
 
 boost::circular_buffer<std::string> lastmessages(5);
+std::stringstream message_dump;
 
 void set_output_handler(OutputHandlerFunc *newhandler, void *userdata)
 {
@@ -47,7 +48,8 @@ void PRINT(const std::string &msg)
 		}
 		print_messages_stack.back() += msg;
 	}
-	PRINT_NOCACHE(msg);
+	message_dump << msg;
+	//PRINT_NOCACHE(msg);
 }
 
 void PRINT_NOCACHE(const std::string &msg)

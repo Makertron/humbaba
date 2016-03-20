@@ -99,6 +99,7 @@ using boost::is_any_of;
 std::string commandline_commands;
 std::string CURRENTDIR;
 
+
 #define QUOTE(x__) # x__
 #define QUOTED(x__) QUOTE(x__)
 
@@ -147,9 +148,9 @@ void localization_init() {
 	}
 }
 
+
 std::string process_request(std::string text)
 {
-	
 	try
 	  {
 		
@@ -174,7 +175,7 @@ std::string process_request(std::string text)
 	   
 		root_module = parse(text.c_str(), parentpath.c_str(), false);
 		if (!root_module) {
-			return std::string("Error In Yr OpenScad Sorries Bru\r\n");
+			return "||messages||"+message_dump.str();
 		}
 		else { 
 			root_module->handleDependencies();
@@ -195,7 +196,8 @@ std::string process_request(std::string text)
 			export_mesh( root_geom.get() , output ); 		
 			
 			delete root_node;
-			return output.str();
+
+			return output.str()+"||messages||"+message_dump.str();
 		}
 	  } 
 	   catch (std::exception& e)
@@ -221,6 +223,7 @@ public:
     {		
 		std::string script_buffer((std::istreambuf_iterator<char>(&response_)), std::istreambuf_iterator<char>());
 		std::string stl = process_request(script_buffer) + "//done//\r\n";
+		message_dump.str("");
 		boost::asio::async_write(socket_, boost::asio::buffer(stl, stl.length()), boost::bind(&session::handle_write, this, boost::asio::placeholders::error));	
 	}
     else
@@ -292,7 +295,7 @@ int main(int argc, char* argv[])
 	PlatformUtils::ensureStdIO();
 	CGAL::set_error_behaviour(CGAL::ABORT);
 	Builtins::instance()->initialize();
-	CURRENTDIR = std::string("/home/ubuntu/openscad/"); 
+	CURRENTDIR = std::string("/home/mixotricha/workspace/newscad/");
 
 	std::cout << "Starting Openscad Server on port: " << argv[1] << std::endl; 
 	std::cout << "Working directory is: " << argv[0] << std::endl; 

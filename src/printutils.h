@@ -17,6 +17,9 @@ namespace OpenSCAD { extern std::string debug; }
 void set_output_handler(OutputHandlerFunc *newhandler, void *userdata);
 
 extern std::list<std::string> print_messages_stack;
+
+extern std::stringstream message_dump;
+
 void print_messages_push();
 void print_messages_pop();
 void printDeprecation(const std::string &str);
