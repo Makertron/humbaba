@@ -31,3 +31,4 @@ private:
 
 	Cache<std::string, cache_entry> cache;
 };
+

@@ -99,7 +99,6 @@ using boost::is_any_of;
 std::string commandline_commands;
 std::string CURRENTDIR;
 
-
 #define QUOTE(x__) # x__
 #define QUOTED(x__) QUOTE(x__)
 
@@ -148,9 +147,9 @@ void localization_init() {
 	}
 }
 
-
 std::string process_request(std::string text)
 {
+	
 	try
 	  {
 		
@@ -172,32 +171,35 @@ std::string process_request(std::string text)
 		shared_ptr<const Geometry> root_geom;
 		
 		std::string parentpath(CURRENTDIR);
-	   
+			   
 		root_module = parse(text.c_str(), parentpath.c_str(), false);
+		
 		if (!root_module) {
-			return "||messages||"+message_dump.str();
+			return std::string("Error In Yr OpenScad Sorries Bru\r\n");
 		}
 		else { 
 			root_module->handleDependencies();
-
+			
 			top_ctx.setDocumentPath(parentpath.c_str());
 			AbstractNode::resetIndexCounter();
 			absolute_root_node = root_module->instantiate(&top_ctx, &root_inst, NULL);
-
+			
 			// Do we have an explicit root node (! modifier)?
 			if (!(root_node = find_root_tag(absolute_root_node))) root_node = absolute_root_node;
 
 			tree.setRoot(root_node);
 			
-			root_geom = geomevaluator.evaluateGeometry(*tree.root(), true);
+			root_geom = geomevaluator.evaluateGeometry(*tree.root(), true );
+			
+		
+
 			if (!root_geom) root_geom.reset(new CGAL_Nef_polyhedron());
 			
 			std::stringstream output;
 			export_mesh( root_geom.get() , output ); 		
-			
+		
 			delete root_node;
-
-			return output.str()+"||messages||"+message_dump.str();
+			return output.str();
 		}
 	  } 
 	   catch (std::exception& e)
@@ -213,7 +215,7 @@ public:
   session(boost::asio::io_service& io_service) : socket_(io_service) { }
 
   tcp::socket& socket() { return socket_; }
-
+  
   void start() {
 	boost::asio::async_read_until(socket_, response_, "//done//", boost::bind(&session::handle_read, this, boost::asio::placeholders::error));
   }
@@ -223,7 +225,6 @@ public:
     {		
 		std::string script_buffer((std::istreambuf_iterator<char>(&response_)), std::istreambuf_iterator<char>());
 		std::string stl = process_request(script_buffer) + "//done//\r\n";
-		message_dump.str("");
 		boost::asio::async_write(socket_, boost::asio::buffer(stl, stl.length()), boost::bind(&session::handle_write, this, boost::asio::placeholders::error));	
 	}
     else
@@ -288,6 +289,7 @@ private:
 };
 
 
+
 int main(int argc, char* argv[])
 {
   	
@@ -295,7 +297,7 @@ int main(int argc, char* argv[])
 	PlatformUtils::ensureStdIO();
 	CGAL::set_error_behaviour(CGAL::ABORT);
 	Builtins::instance()->initialize();
-	CURRENTDIR = std::string("/home/ubuntu/openscad/");
+	CURRENTDIR = std::string("/home/ubuntu/openscad/"); 
 
 	std::cout << "Starting Openscad Server on port: " << argv[1] << std::endl; 
 	std::cout << "Working directory is: " << argv[0] << std::endl; 
@@ -322,8 +324,7 @@ int main(int argc, char* argv[])
 	  {
 		std::cerr << "Exception: " << e.what() << "\n";
 	  }
-
-	  
-
+  
 	return 0;
 }
+

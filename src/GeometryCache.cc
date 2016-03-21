@@ -53,3 +53,4 @@ GeometryCache::cache_entry::cache_entry(const shared_ptr<const Geometry> &geom)
 {
 	if (print_messages_stack.size() > 0) this->msg = print_messages_stack.back();
 }
+

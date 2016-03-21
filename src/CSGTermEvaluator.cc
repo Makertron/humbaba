@@ -132,8 +132,9 @@ static shared_ptr<CSGTerm> evaluate_csg_term_from_geometry(const State &state,
 	return t;
 }
 
-Response CSGTermEvaluator::visit(State &state, const AbstractPolyNode &node)
+Response CSGTermEvaluator::visit(State &state, const AbstractPolyNode &node )
 {
+	 
 	if (state.isPostfix()) {
 		shared_ptr<CSGTerm> t1;
 		if (this->geomevaluator) {
@@ -200,6 +201,7 @@ Response CSGTermEvaluator::visit(State &state, const ColorNode &node)
 // FIXME: If we've got CGAL support, render this node as a CGAL union into a PolySet
 Response CSGTermEvaluator::visit(State &state, const RenderNode &node)
 {
+
 	if (state.isPostfix()) {
 		shared_ptr<CSGTerm> t1;
 		shared_ptr<const Geometry> geom;
@@ -219,6 +221,7 @@ Response CSGTermEvaluator::visit(State &state, const RenderNode &node)
 
 Response CSGTermEvaluator::visit(State &state, const CgaladvNode &node)
 {
+	
 	if (state.isPostfix()) {
 		shared_ptr<CSGTerm> t1;
     // FIXME: Calling evaluator directly since we're not a PolyNode. Generalize this.
@@ -249,3 +252,4 @@ void CSGTermEvaluator::addToParent(const State &state, const AbstractNode &node)
 		this->visitedchildren[state.parent()->index()].push_back(&node);
 	}
 }
+
