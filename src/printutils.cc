@@ -49,7 +49,7 @@ void PRINT(const std::string &msg)
 		print_messages_stack.back() += msg;
 	}
 	message_dump << msg;
-	//PRINT_NOCACHE(msg);
+	PRINT_NOCACHE(msg);
 }
 
 void PRINT_NOCACHE(const std::string &msg)

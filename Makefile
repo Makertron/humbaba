@@ -6,7 +6,7 @@
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0 -DDEBUG -DENABLE_CGAL -DENABLE_OPENCSG
+DEFINES       = -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0  -DDEBUG -DENABLE_CGAL -DENABLE_OPENCSG
 CFLAGS        = -m64 -pipe -O2 -D_REENTRANT -Wall -W $(DEFINES)
 CXXFLAGS      = -m64 -pipe -fno-strict-aliasing -frounding-math -DEIGEN_DONT_ALIGN -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/freetype2 -O2 -D_REENTRANT -Wall -W -Wno-unused-local-typedefs $(DEFINES)
 INCPATH       = -I. -I/usr/include/eigen3 -Isrc -Isrc/libtess2/Include -Iobjects

@@ -223,7 +223,7 @@ public:
     {		
 		std::string script_buffer((std::istreambuf_iterator<char>(&response_)), std::istreambuf_iterator<char>());
 		std::string stl = process_request(script_buffer) + "//done//\r\n";
-		message_dump.str("");
+		//message_dump.str("");
 		boost::asio::async_write(socket_, boost::asio::buffer(stl, stl.length()), boost::bind(&session::handle_write, this, boost::asio::placeholders::error));	
 	}
     else
@@ -270,6 +270,7 @@ public:
   {
     if (!error)
     {
+      message_dump.str("");
       new_session->start();
       new_session = new session(io_service_);
       acceptor_.async_accept(new_session->socket(),
