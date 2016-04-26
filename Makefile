@@ -6,13 +6,13 @@
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0 -DDEBUG -DENABLE_CGAL -DENABLE_OPENCSG
-CFLAGS        = -g -m64 -pipe -O2 -D_REENTRANT -Wall -W $(DEFINES)
-CXXFLAGS      = -g -m64 -pipe -fno-strict-aliasing -frounding-math -DEIGEN_DONT_ALIGN -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/freetype2 -O2 -D_REENTRANT -Wall -W -Wno-unused-local-typedefs $(DEFINES)
+DEFINES       = -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0 -DENABLE_CGAL -DENABLE_OPENCSG
+CFLAGS        = -m64 -pipe -O2 -D_REENTRANT -Wall -W $(DEFINES)
+CXXFLAGS      = -m64 -pipe -fno-strict-aliasing -frounding-math -DEIGEN_DONT_ALIGN -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/freetype2 -O2 -D_REENTRANT -Wall -W -Wno-unused-local-typedefs $(DEFINES)
 INCPATH       = -I. -I/usr/include/eigen3 -Isrc -Isrc/libtess2/Include -Iobjects
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lCGAL -lmpfr -lgmp -lopencsg -lGLEW -lboost_thread -lboost_program_options -lboost_filesystem -lboost_system -lboost_regex -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -L/usr/lib/x86_64-linux-gnu -lGL -lGLU -lX11 -lpthread 
+LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lCGAL -lmpfr -lgmp -lopencsg -lGLEW -lboost_thread -lboost_program_options -lboost_filesystem -lboost_system -lboost_regex -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -L/usr/lib/x86_64-linux-gnu -lGL -lGLU -lpthread 
 AR            = ar cqs
 RANLIB        = 
 TAR           = tar -cf
@@ -101,14 +101,12 @@ SOURCES       = src/version_check.cc \
 		src/builtin.cc \
 		src/calc.cc \
 		src/export.cc \
-		src/export_png.cc \
 		src/import.cc \
 		src/renderer.cc \
 		src/colormap.cc \
 		src/ThrownTogetherRenderer.cc \
 		src/CSGTermEvaluator.cc \
 		src/svg.cc \
-		src/OffscreenView.cc \
 		src/fbo.cc \
 		src/system-gl.cc \
 		src/imageutils.cc \
@@ -123,7 +121,6 @@ SOURCES       = src/version_check.cc \
 		src/libtess2/Source/sweep.c \
 		src/libtess2/Source/tess.c \
 		src/imageutils-lodepng.cc \
-		src/OffscreenContextGLX.cc \
 		src/OpenCSGRenderer.cc \
 		src/cgalutils.cc \
 		src/cgalutils-tess.cc \
@@ -197,14 +194,12 @@ OBJECTS  = objects/version_check.o \
 		objects/builtin.o \
 		objects/calc.o \
 		objects/export.o \
-		objects/export_png.o \
 		objects/import.o \
 		objects/renderer.o \
 		objects/colormap.o \
 		objects/ThrownTogetherRenderer.o \
 		objects/CSGTermEvaluator.o \
 		objects/svg.o \
-		objects/OffscreenView.o \
 		objects/fbo.o \
 		objects/system-gl.o \
 		objects/imageutils.o \
@@ -219,7 +214,6 @@ OBJECTS  = objects/version_check.o \
 		objects/sweep.o \
 		objects/tess.o \
 		objects/imageutils-lodepng.o \
-		objects/OffscreenContextGLX.o \
 		objects/OpenCSGRenderer.o \
 		objects/cgalutils.o \
 		objects/cgalutils-tess.o \
@@ -1135,44 +1129,6 @@ objects/export.o: src/export.cc src/export.h \
 		src/enums.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/export.o src/export.cc
 
-objects/export_png.o: src/export_png.cc src/export.h \
-		src/Tree.h \
-		src/nodecache.h \
-		src/node.h \
-		src/traverser.h \
-		src/Camera.h \
-		src/linalg.h \
-		src/memory.h \
-		src/printutils.h \
-		src/OffscreenView.h \
-		src/OffscreenContext.h \
-		src/fbo.h \
-		src/system-gl.h \
-		src/GLView.h \
-		src/colormap.h \
-		src/CsgInfo.h \
-		src/csgterm.h \
-		src/GeometryEvaluator.h \
-		src/visitor.h \
-		src/enums.h \
-		src/Geometry.h \
-		src/CSGTermEvaluator.h \
-		src/csgtermnormalizer.h \
-		src/rendersettings.h \
-		src/polyset.h \
-		src/GeometryUtils.h \
-		src/renderer.h \
-		src/Polygon2d.h \
-		src/CGALRenderer.h \
-		src/CGAL_Nef_polyhedron.h \
-		src/cgal.h \
-		src/CGAL_workaround_Mark_bounded_volumes.h \
-		src/CGAL_Nef3_workaround.h \
-		src/cgalutils.h \
-		src/OpenCSGRenderer.h \
-		src/ThrownTogetherRenderer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/export_png.o src/export_png.cc
-
 objects/import.o: src/import.cc src/importnode.h \
 		src/node.h \
 		src/traverser.h \
@@ -1291,17 +1247,6 @@ objects/svg.o: src/svg.cc src/svg.h \
 		src/enums.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/svg.o src/svg.cc
 
-objects/OffscreenView.o: src/OffscreenView.cc src/OffscreenView.h \
-		src/OffscreenContext.h \
-		src/fbo.h \
-		src/system-gl.h \
-		src/GLView.h \
-		src/Camera.h \
-		src/linalg.h \
-		src/colormap.h \
-		src/printutils.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/OffscreenView.o src/OffscreenView.cc
-
 objects/fbo.o: src/fbo.cc src/fbo.h \
 		src/system-gl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fbo.o src/fbo.cc
@@ -1359,7 +1304,6 @@ objects/openscad.o: src/openscad.cc src/openscad.h \
 		src/csgterm.h \
 		src/CSGTermEvaluator.h \
 		src/CsgInfo.h \
-		src/OffscreenView.h \
 		src/OffscreenContext.h \
 		src/fbo.h \
 		src/GLView.h \
@@ -1421,14 +1365,6 @@ objects/tess.o: src/libtess2/Source/tess.c src/libtess2/Source/bucketalloc.h \
 objects/imageutils-lodepng.o: src/imageutils-lodepng.cc src/imageutils.h \
 		src/lodepng.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/imageutils-lodepng.o src/imageutils-lodepng.cc
-
-objects/OffscreenContextGLX.o: src/OffscreenContextGLX.cc src/OffscreenContext.h \
-		src/fbo.h \
-		src/system-gl.h \
-		src/printutils.h \
-		src/imageutils.h \
-		src/OffscreenContextAll.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/OffscreenContextGLX.o src/OffscreenContextGLX.cc
 
 objects/OpenCSGRenderer.o: src/OpenCSGRenderer.cc src/system-gl.h \
 		src/OpenCSGRenderer.h \
