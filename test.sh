@@ -1,2 +1,0 @@
- g++ -c -g -O2 -frounding-math -DEIGEN_DONT_ALIGN -Wcast-align -fvisibility-inlines-hidden -Wno-unused-local-typedefs -DOPENSCAD_VERSION=2015.03-2 -DOPENSCAD_SHORTVERSION=2015.03 -DOPENSCAD_YEAR=2015.0 -DOPENSCAD_MONTH=03.0 -DOPENSCAD_DAY=.0 -DDEBUG -DENABLE_CGAL -DENABLE_OPENCSG -I. -I /usr/include/glib-2.0/ -I harfbuzz/src -I /usrinclude/freetype2 -I /usr/lib/arm-linux-gnueabihf/glib-2.0/include -I/usr/include/eigen3 -Isrc -Isrc/libtess2/Include -Iobjects -o objects/GeometryEvaluator.o src/GeometryEvaluator.cc
-
